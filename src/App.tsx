@@ -6,6 +6,8 @@ import FileUpload from './components/FileUpload';
 import SecurityOptions from './components/SecurityOptions';
 import UploadProgress from './components/UploadProgress';
 import ShareResult from './components/ShareResult';
+import StatsDisplay from './components/StatsDisplay';
+import DownloadPage from './components/DownloadPage';
 import { StorageService } from './utils/storage';
 
 interface SecuritySettings {
@@ -38,6 +40,14 @@ function App() {
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([]);
   const [completedUploads, setCompletedUploads] = useState<CompletedUpload[]>([]);
 
+  // Check if we're on a download page
+  const path = window.location.pathname;
+  const downloadMatch = path.match(/^\/download\/(.+)$/);
+  
+  if (downloadMatch) {
+    return <DownloadPage fileId={downloadMatch[1]} />;
+  }
+
   const handleFileSelect = (files: File[]) => {
     setSelectedFiles(files);
   };
@@ -46,11 +56,11 @@ function App() {
     setSecuritySettings(options);
   };
 
-  const simulateUpload = async (file: File, settings: SecuritySettings): Promise<string> => {
-    return new Promise((resolve) => {
+  const uploadFile = async (file: File, settings: SecuritySettings): Promise<CompletedUpload> => {
+    return new Promise((resolve, reject) => {
       let progress = 0;
-      const interval = setInterval(() => {
-        progress += Math.random() * 20;
+      const interval = setInterval(async () => {
+        progress += Math.random() * 15 + 5;
         if (progress >= 100) {
           progress = 100;
           clearInterval(interval);
@@ -61,9 +71,23 @@ function App() {
               : f
           ));
           
-          // Simulate getting file ID from storage service
-          const fileId = Math.random().toString(36).substring(2, 15);
-          resolve(fileId);
+          try {
+            // Actually upload to Supabase
+            const result = await StorageService.uploadFile(
+              file,
+              settings.password,
+              settings.expiresIn,
+              settings.maxDownloads
+            );
+            resolve(result);
+          } catch (error) {
+            setUploadFiles(prev => prev.map(f => 
+              f.name === file.name 
+                ? { ...f, status: 'error' as const }
+                : f
+            ));
+            reject(error);
+          }
         } else {
           setUploadFiles(prev => prev.map(f => 
             f.name === file.name 
@@ -90,31 +114,7 @@ function App() {
     setUploadFiles(initialFiles);
 
     // Upload files
-    const uploadPromises = selectedFiles.map(async (file) => {
-      try {
-        const fileId = await simulateUpload(file, securitySettings);
-        
-        const expiresAt = new Date();
-        expiresAt.setHours(expiresAt.getHours() + securitySettings.expiresIn);
-        
-        const completedUpload: CompletedUpload = {
-          fileId,
-          fileName: file.name,
-          expiresAt,
-          hasPassword: !!securitySettings.password,
-          maxDownloads: securitySettings.maxDownloads
-        };
-        
-        return completedUpload;
-      } catch (error) {
-        setUploadFiles(prev => prev.map(f => 
-          f.name === file.name 
-            ? { ...f, status: 'error' as const }
-            : f
-        ));
-        throw error;
-      }
-    });
+    const uploadPromises = selectedFiles.map(file => uploadFile(file, securitySettings));
 
     try {
       const results = await Promise.all(uploadPromises);
@@ -152,7 +152,7 @@ function App() {
               </div>
               
               <a
-                href="https://github.com"
+                href="https://github.com/jigneshis/DropVault"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 text-gray-400 hover:text-neon-green transition-colors"
@@ -178,6 +178,9 @@ function App() {
                   Password protection and self-destruct timers included.
                 </p>
               </div>
+
+              {/* Stats Display */}
+              <StatsDisplay />
 
               {/* Features */}
               <div className="grid md:grid-cols-3 gap-6 mb-12">
