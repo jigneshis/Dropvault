@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'JetBrains Mono', monospace;
+    background: #0a0a0a;
+    color: #ffffff;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  .matrix-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.1;
+  }
+  
+  .glitch-text {
+    position: relative;
+    color: #00ff41;
+    font-weight: 600;
+  }
+  
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .glitch-text::before {
+    animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+    color: #ff00ff;
+    z-index: -1;
+  }
+  
+  .glitch-text::after {
+    animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+    color: #00ffff;
+    z-index: -2;
+  }
+  
+  .neon-border {
+    border: 1px solid #00ff41;
+    box-shadow: 
+      0 0 5px #00ff41,
+      inset 0 0 5px rgba(0, 255, 65, 0.1);
+  }
+  
+  .neon-border:hover {
+    box-shadow: 
+      0 0 10px #00ff41,
+      0 0 20px #00ff41,
+      inset 0 0 10px rgba(0, 255, 65, 0.2);
+  }
+  
+  .glass-card {
+    background: rgba(17, 17, 17, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 65, 0.3);
+  }
+  
+  .terminal-cursor::after {
+    content: '_';
+    animation: flicker 1s infinite;
+    color: #00ff41;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111111;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00ff41;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00ffff;
+}
