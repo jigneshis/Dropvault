@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Zap, Upload as UploadIcon, Github } from 'lucide-react';
+import { Shield, Zap, Upload as UploadIcon, Github, MessageCircle } from 'lucide-react';
 import MatrixRain from './components/MatrixRain';
 import GlitchText from './components/GlitchText';
 import FileUpload from './components/FileUpload';
@@ -151,14 +151,26 @@ function App() {
                 </div>
               </div>
               
-              <a
-                href="https://github.com/jigneshis/DropVault"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 text-gray-400 hover:text-neon-green transition-colors"
-              >
-                <Github className="w-6 h-6" />
-              </a>
+              <div className="flex items-center gap-3">
+                <a
+                  href="https://chat.turri.in.net"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-gradient-neon text-dark-bg rounded-lg font-mono text-sm font-semibold hover:scale-105 transition-all duration-200 flex items-center gap-2 neon-border"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Chat with AI!
+                </a>
+                
+                <a
+                  href="https://github.com/jigneshis/DropVault"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-gray-400 hover:text-neon-green transition-colors"
+                >
+                  <Github className="w-6 h-6" />
+                </a>
+              </div>
             </div>
           </div>
         </header>
