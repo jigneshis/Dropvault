@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Zap, Upload as UploadIcon, Github, MessageCircle } from 'lucide-react';
+import { Shield, Zap, Upload as UploadIcon, Github, MessageCircle, HardDrive, X, ExternalLink, Scissors } from 'lucide-react';
 import MatrixRain from './components/MatrixRain';
 import GlitchText from './components/GlitchText';
 import FileUpload from './components/FileUpload';
@@ -39,6 +39,7 @@ function App() {
   const [uploading, setUploading] = useState(false);
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([]);
   const [completedUploads, setCompletedUploads] = useState<CompletedUpload[]>([]);
+  const [showStoragePopup, setShowStoragePopup] = useState(false);
 
   // Check if we're on a download page
   const path = window.location.pathname;
@@ -152,6 +153,14 @@ function App() {
               </div>
               
               <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setShowStoragePopup(true)}
+                  className="px-4 py-2 bg-gradient-to-r from-neon-pink to-neon-cyan text-dark-bg rounded-lg font-mono text-sm font-semibold hover:scale-105 transition-all duration-200 flex items-center gap-2 neon-border"
+                >
+                  <HardDrive className="w-4 h-4" />
+                  GET MORE STORAGE!
+                </button>
+                
                 <a
                   href="https://chat.turri.in.net"
                   target="_blank"
@@ -174,6 +183,82 @@ function App() {
             </div>
           </div>
         </header>
+
+        {/* Storage Popup */}
+        {showStoragePopup && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="glass-card rounded-lg p-8 max-w-md w-full relative animate-pulse-neon">
+              <button
+                onClick={() => setShowStoragePopup(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-neon-green transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              
+              <div className="text-center mb-6">
+                <HardDrive className="w-16 h-16 text-neon-cyan mx-auto mb-4" />
+                <GlitchText text="STORAGE EXPANSION" className="text-2xl font-bold mb-4" />
+              </div>
+              
+              <div className="space-y-4 mb-6">
+                <p className="text-gray-300 font-mono text-sm leading-relaxed">
+                  Hello! DropVault is currently in its early stages, and we're actively working to expand storage capacity and enhance features—all while keeping it free for our users.
+                </p>
+                
+                <p className="text-gray-300 font-mono text-sm leading-relaxed">
+                  Due to infrastructure scaling challenges, we're temporarily limited to 100MB per file. However, we've got some clever workarounds for you:
+                </p>
+                
+                <div className="bg-dark-card rounded-lg p-4 space-y-2">
+                  <div className="flex items-center gap-2 text-neon-green text-sm font-mono">
+                    <Zap className="w-4 h-4" />
+                    <span>Pro Tips:</span>
+                  </div>
+                  <ul className="text-xs text-gray-400 font-mono space-y-1 ml-6">
+                    <li>• Open multiple tabs - we don't restrict that! 😉</li>
+                    <li>• Use file splitters for larger files</li>
+                    <li>• Deploy on multiple instances</li>
+                    <li>• Compress files before uploading</li>
+                  </ul>
+                </div>
+                
+                <p className="text-gray-300 font-mono text-sm leading-relaxed">
+                  We're committed to scaling up soon. In the meantime, check out these solutions:
+                </p>
+              </div>
+              
+              <div className="space-y-3">
+                <a
+                  href="https://pinetools.com/split-files"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full px-4 py-3 bg-gradient-to-r from-neon-green to-neon-cyan text-dark-bg rounded-lg font-mono text-sm font-semibold hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2 neon-border"
+                >
+                  <Scissors className="w-4 h-4" />
+                  File Splitter Tool
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                
+                <a
+                  href="https://cloud.beasty.in.net/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full px-4 py-3 bg-gradient-to-r from-neon-pink to-neon-cyan text-dark-bg rounded-lg font-mono text-sm font-semibold hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2 neon-border"
+                >
+                  <HardDrive className="w-4 h-4" />
+                  Get Cloud Storage From Us!
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              </div>
+              
+              <div className="mt-6 text-center">
+                <p className="text-xs text-gray-500 font-mono">
+                  Thanks for being part of our journey! 🚀
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Main Content */}
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
