@@ -140,35 +140,37 @@ function App() {
       <div className="relative z-10">
         {/* Header */}
         <header className="border-b border-gray-800 bg-dark-bg/90 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex items-center justify-between">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-gradient-neon rounded-lg flex items-center justify-center">
                   <Shield className="w-6 h-6 text-dark-bg" />
                 </div>
-                <div>
-                  <GlitchText text="DropVault" className="text-2xl font-bold" />
-                  <p className="text-sm text-gray-400 font-mono">Secure • Anonymous • Self-Destructing</p>
+                <div className="text-center sm:text-left">
+                  <GlitchText text="DropVault" className="text-xl sm:text-2xl font-bold" />
+                  <p className="text-xs sm:text-sm text-gray-400 font-sans">Secure • Anonymous • Self-Destructing</p>
                 </div>
               </div>
               
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
                 <button
                   onClick={() => setShowStoragePopup(true)}
-                  className="px-4 py-2 bg-gradient-to-r from-neon-pink to-neon-cyan text-dark-bg rounded-lg font-mono text-sm font-semibold hover:scale-105 transition-all duration-200 flex items-center gap-2 neon-border"
+                  className="px-3 py-2 sm:px-4 sm:py-2 bg-gradient-to-r from-neon-pink to-neon-cyan text-dark-bg rounded-lg font-sans text-xs sm:text-sm font-semibold hover:scale-105 transition-all duration-200 flex items-center gap-2 neon-border"
                 >
                   <HardDrive className="w-4 h-4" />
-                  GET MORE STORAGE!
+                  <span className="hidden sm:inline">GET MORE STORAGE!</span>
+                  <span className="sm:hidden">STORAGE</span>
                 </button>
                 
                 <a
                   href="https://chat.turri.in.net"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-gradient-neon text-dark-bg rounded-lg font-mono text-sm font-semibold hover:scale-105 transition-all duration-200 flex items-center gap-2 neon-border"
+                  className="px-3 py-2 sm:px-4 sm:py-2 bg-gradient-neon text-dark-bg rounded-lg font-sans text-xs sm:text-sm font-semibold hover:scale-105 transition-all duration-200 flex items-center gap-2 neon-border"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  Chat with AI!
+                  <span className="hidden sm:inline">Chat with AI!</span>
+                  <span className="sm:hidden">AI Chat</span>
                 </a>
                 
                 <a
@@ -177,7 +179,7 @@ function App() {
                   rel="noopener noreferrer"
                   className="p-2 text-gray-400 hover:text-neon-green transition-colors"
                 >
-                  <Github className="w-6 h-6" />
+                  <Github className="w-5 h-5 sm:w-6 sm:h-6" />
                 </a>
               </div>
             </div>
@@ -187,90 +189,95 @@ function App() {
         {/* Storage Popup */}
         {showStoragePopup && (
           <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="glass-card rounded-lg p-8 max-w-md w-full relative animate-pulse-neon">
-              <button
-                onClick={() => setShowStoragePopup(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-neon-green transition-colors"
-              >
-                <X className="w-6 h-6" />
-              </button>
-              
-              <div className="text-center mb-6">
-                <HardDrive className="w-16 h-16 text-neon-cyan mx-auto mb-4" />
-                <GlitchText text="STORAGE EXPANSION" className="text-2xl font-bold mb-4" />
+            <div className="glass-card rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto relative animate-pulse-neon">
+              <div className="sticky top-0 bg-dark-bg/90 backdrop-blur-sm p-4 border-b border-gray-700 flex justify-between items-center">
+                <h2 className="text-lg font-bold text-neon-cyan">Storage Expansion</h2>
+                <button
+                  onClick={() => setShowStoragePopup(false)}
+                  className="text-gray-400 hover:text-neon-green transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
               </div>
               
-              <div className="space-y-4 mb-6">
-                <p className="text-gray-300 font-mono text-sm leading-relaxed">
-                  Hello! DropVault is currently in its early stages, and we're actively working to expand storage capacity and enhance features—all while keeping it free for our users.
-                </p>
-                
-                <p className="text-gray-300 font-mono text-sm leading-relaxed">
-                  Due to infrastructure scaling challenges, we're temporarily limited to 100MB per file. However, we've got some clever workarounds for you:
-                </p>
-                
-                <div className="bg-dark-card rounded-lg p-4 space-y-2">
-                  <div className="flex items-center gap-2 text-neon-green text-sm font-mono">
-                    <Zap className="w-4 h-4" />
-                    <span>Pro Tips:</span>
-                  </div>
-                  <ul className="text-xs text-gray-400 font-mono space-y-1 ml-6">
-                    <li>• Open multiple tabs - we don't restrict that! 😉</li>
-                    <li>• Use file splitters for larger files</li>
-                    <li>• Deploy on multiple instances</li>
-                    <li>• Compress files before uploading</li>
-                  </ul>
+              <div className="p-6 space-y-6">
+                <div className="text-center">
+                  <HardDrive className="w-16 h-16 text-neon-cyan mx-auto mb-4" />
+                  <GlitchText text="STORAGE EXPANSION" className="text-xl font-bold mb-4" />
                 </div>
                 
-                <p className="text-gray-300 font-mono text-sm leading-relaxed">
-                  We're committed to scaling up soon. In the meantime, check out these solutions:
-                </p>
-              </div>
-              
-              <div className="space-y-3">
-                <a
-                  href="https://pinetools.com/split-files"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full px-4 py-3 bg-gradient-to-r from-neon-green to-neon-cyan text-dark-bg rounded-lg font-mono text-sm font-semibold hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2 neon-border"
-                >
-                  <Scissors className="w-4 h-4" />
-                  File Splitter Tool
-                  <ExternalLink className="w-4 h-4" />
-                </a>
+                <div className="space-y-4">
+                  <p className="text-gray-300 font-sans text-sm leading-relaxed">
+                    Hello! DropVault is currently in its early stages, and we're actively working to expand storage capacity and enhance features—all while keeping it free for our users.
+                  </p>
+                  
+                  <p className="text-gray-300 font-sans text-sm leading-relaxed">
+                    Due to infrastructure scaling challenges, we're temporarily limited to 100MB per file. However, we've got some clever workarounds for you:
+                  </p>
+                  
+                  <div className="bg-dark-card rounded-lg p-4 space-y-2">
+                    <div className="flex items-center gap-2 text-neon-green text-sm font-sans font-semibold">
+                      <Zap className="w-4 h-4" />
+                      <span>Pro Tips:</span>
+                    </div>
+                    <ul className="text-xs text-gray-400 font-sans space-y-1 ml-6">
+                      <li>• Open multiple tabs - we don't restrict that! 😉</li>
+                      <li>• Use file splitters for larger files</li>
+                      <li>• Deploy on multiple instances</li>
+                      <li>• Compress files before uploading</li>
+                    </ul>
+                  </div>
+                  
+                  <p className="text-gray-300 font-sans text-sm leading-relaxed">
+                    We're committed to scaling up soon. In the meantime, check out these solutions:
+                  </p>
+                </div>
                 
-                <a
-                  href="https://cloud.beasty.in.net/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full px-4 py-3 bg-gradient-to-r from-neon-pink to-neon-cyan text-dark-bg rounded-lg font-mono text-sm font-semibold hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2 neon-border"
-                >
-                  <HardDrive className="w-4 h-4" />
-                  Get Cloud Storage From Us!
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-              </div>
-              
-              <div className="mt-6 text-center">
-                <p className="text-xs text-gray-500 font-mono">
-                  Thanks for being part of our journey! 🚀
-                </p>
+                <div className="space-y-3">
+                  <a
+                    href="https://pinetools.com/split-files"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full px-4 py-3 bg-gradient-to-r from-neon-green to-neon-cyan text-dark-bg rounded-lg font-sans text-sm font-semibold hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2 neon-border"
+                  >
+                    <Scissors className="w-4 h-4" />
+                    File Splitter Tool
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                  
+                  <a
+                    href="https://cloud.beasty.in.net/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full px-4 py-3 bg-gradient-to-r from-neon-pink to-neon-cyan text-dark-bg rounded-lg font-sans text-sm font-semibold hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2 neon-border"
+                  >
+                    <HardDrive className="w-4 h-4" />
+                    Get Cloud Storage From Us!
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
+                
+                <div className="text-center pt-4 border-t border-gray-700">
+                  <p className="text-xs text-gray-500 font-sans">
+                    Thanks for being part of our journey! 🚀
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         )}
 
         {/* Main Content */}
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           {completedUploads.length === 0 ? (
             <div className="space-y-8">
               {/* Hero Section */}
               <div className="text-center space-y-4">
                 <GlitchText 
                   text="Share Files Like a Ghost" 
-                  className="text-4xl sm:text-5xl font-bold mb-4"
+                  className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4"
                 />
-                <p className="text-xl text-gray-300 font-mono max-w-2xl mx-auto">
+                <p className="text-lg sm:text-xl text-gray-300 font-sans max-w-2xl mx-auto px-4">
                   Upload, secure, and share files that vanish without a trace. 
                   Password protection and self-destruct timers included.
                 </p>
@@ -280,35 +287,35 @@ function App() {
               <StatsDisplay />
 
               {/* Features */}
-              <div className="grid md:grid-cols-3 gap-6 mb-12">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                 <div className="glass-card rounded-lg p-6 text-center">
                   <Shield className="w-8 h-8 text-neon-green mx-auto mb-3" />
-                  <h3 className="font-mono text-lg mb-2">Password Protected</h3>
-                  <p className="text-sm text-gray-400">Secure your files with optional password encryption</p>
+                  <h3 className="font-sans text-lg mb-2 font-semibold">Password Protected</h3>
+                  <p className="text-sm text-gray-400 font-sans">Secure your files with optional password encryption</p>
                 </div>
                 
                 <div className="glass-card rounded-lg p-6 text-center">
                   <Zap className="w-8 h-8 text-neon-cyan mx-auto mb-3" />
-                  <h3 className="font-mono text-lg mb-2">Self-Destruct</h3>
-                  <p className="text-sm text-gray-400">Files automatically delete after specified time</p>
+                  <h3 className="font-sans text-lg mb-2 font-semibold">Self-Destruct</h3>
+                  <p className="text-sm text-gray-400 font-sans">Files automatically delete after specified time</p>
                 </div>
                 
-                <div className="glass-card rounded-lg p-6 text-center">
+                <div className="glass-card rounded-lg p-6 text-center sm:col-span-2 lg:col-span-1">
                   <UploadIcon className="w-8 h-8 text-neon-pink mx-auto mb-3" />
-                  <h3 className="font-mono text-lg mb-2">Anonymous Sharing</h3>
-                  <p className="text-sm text-gray-400">No accounts required, share instantly via QR codes</p>
+                  <h3 className="font-sans text-lg mb-2 font-semibold">Anonymous Sharing</h3>
+                  <p className="text-sm text-gray-400 font-sans">No accounts required, share instantly via QR codes</p>
                 </div>
               </div>
 
               {/* Upload Section */}
               <div className="grid lg:grid-cols-2 gap-8">
                 <div className="space-y-6">
-                  <h2 className="text-2xl font-mono text-neon-green">1. Select Files</h2>
+                  <h2 className="text-xl sm:text-2xl font-sans text-neon-green font-semibold">1. Select Files</h2>
                   <FileUpload onFileSelect={handleFileSelect} />
                 </div>
 
                 <div className="space-y-6">
-                  <h2 className="text-2xl font-mono text-neon-green">2. Security Settings</h2>
+                  <h2 className="text-xl sm:text-2xl font-sans text-neon-green font-semibold">2. Security Settings</h2>
                   <SecurityOptions onOptionsChange={handleSecurityOptionsChange} />
                 </div>
               </div>
@@ -320,7 +327,7 @@ function App() {
                     onClick={handleUpload}
                     disabled={uploading}
                     className={`
-                      px-8 py-4 rounded-lg font-mono text-lg font-semibold transition-all duration-300 flex items-center gap-3
+                      px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-sans text-base sm:text-lg font-semibold transition-all duration-300 flex items-center gap-3
                       ${uploading 
                         ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
                         : 'bg-gradient-neon text-dark-bg hover:scale-105 hover:shadow-2xl neon-border'
@@ -330,12 +337,12 @@ function App() {
                     {uploading ? (
                       <>
                         <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-                        Uploading...
+                        <span>Uploading...</span>
                       </>
                     ) : (
                       <>
                         <Shield className="w-5 h-5" />
-                        Secure & Share ({selectedFiles.length} file{selectedFiles.length !== 1 ? 's' : ''})
+                        <span>Secure & Share ({selectedFiles.length} file{selectedFiles.length !== 1 ? 's' : ''})</span>
                       </>
                     )}
                   </button>
@@ -363,7 +370,7 @@ function App() {
               <div className="flex justify-center">
                 <button
                   onClick={handleNewUpload}
-                  className="px-6 py-3 bg-dark-card border border-neon-green text-neon-green rounded-lg font-mono hover:bg-neon-green/10 transition-all duration-200 flex items-center gap-2"
+                  className="px-6 py-3 bg-dark-card border border-neon-green text-neon-green rounded-lg font-sans hover:bg-neon-green/10 transition-all duration-200 flex items-center gap-2"
                 >
                   <UploadIcon className="w-4 h-4" />
                   Upload More Files
@@ -377,14 +384,14 @@ function App() {
         <footer className="border-t border-gray-800 bg-dark-bg/90 backdrop-blur-sm mt-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="text-center">
-              <p className="text-gray-400 font-mono text-sm">
+              <p className="text-gray-400 font-sans text-sm">
                 Built with ❤️ for privacy and security • No logs • No tracking • No BS
               </p>
-              <div className="mt-4 flex justify-center space-x-6 text-xs text-gray-500 font-mono">
+              <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-gray-500 font-sans">
                 <span>Files stored temporarily</span>
-                <span>•</span>
+                <span className="hidden sm:inline">•</span>
                 <span>Auto-deletion guaranteed</span>
-                <span>•</span>
+                <span className="hidden sm:inline">•</span>
                 <span>Zero-knowledge encryption</span>
               </div>
             </div>

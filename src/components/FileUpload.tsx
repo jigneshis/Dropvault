@@ -87,7 +87,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     <div className="space-y-4">
       <div
         className={`
-          relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-300
+          relative border-2 border-dashed rounded-lg p-6 sm:p-8 text-center transition-all duration-300
           ${dragActive 
             ? 'border-neon-green bg-neon-green/10 scale-105' 
             : 'border-gray-600 hover:border-neon-green/50'
@@ -108,22 +108,22 @@ const FileUpload: React.FC<FileUploadProps> = ({
         
         <div className="space-y-4">
           <div className="flex justify-center">
-            <Upload className={`w-12 h-12 ${dragActive ? 'text-neon-green animate-pulse' : 'text-gray-400'}`} />
+            <Upload className={`w-10 h-10 sm:w-12 sm:h-12 ${dragActive ? 'text-neon-green animate-pulse' : 'text-gray-400'}`} />
           </div>
           
           <div>
-            <p className="text-lg font-mono">
+            <p className="text-base sm:text-lg font-sans">
               {dragActive ? (
                 <span className="text-neon-green animate-pulse">Drop files here...</span>
               ) : (
                 <>Drop files here or <span className="text-neon-green underline cursor-pointer">browse</span></>
               )}
             </p>
-            <p className="text-sm text-gray-400 mt-2">
+            <p className="text-sm text-gray-400 mt-2 font-sans">
               Maximum file size: {formatFileSize(maxSize)}
             </p>
             {acceptedTypes.length > 0 && (
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-500 mt-1 font-sans">
                 Accepted types: {acceptedTypes.join(', ')}
               </p>
             )}
@@ -141,7 +141,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
           {errors.map((error, index) => (
             <div key={index} className="flex items-center gap-2 p-3 bg-red-400/10 border border-red-400/30 rounded-lg">
               <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0" />
-              <p className="text-red-400 font-mono text-sm">{error}</p>
+              <p className="text-red-400 font-sans text-sm">{error}</p>
             </div>
           ))}
         </div>
@@ -150,17 +150,17 @@ const FileUpload: React.FC<FileUploadProps> = ({
       {selectedFiles.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-mono text-neon-green flex items-center gap-2">
+            <h3 className="text-sm font-sans text-neon-green flex items-center gap-2 font-semibold">
               <Zap className="w-4 h-4" />
               Selected Files ({selectedFiles.length})
             </h3>
             <div className="flex items-center gap-4">
-              <span className="text-xs font-mono text-gray-400">
+              <span className="text-xs font-sans text-gray-400">
                 Total: {formatFileSize(totalSize)}
               </span>
               <button
                 onClick={clearAll}
-                className="text-xs font-mono text-red-400 hover:text-red-300 transition-colors"
+                className="text-xs font-sans text-red-400 hover:text-red-300 transition-colors"
               >
                 Clear All
               </button>
@@ -170,21 +170,21 @@ const FileUpload: React.FC<FileUploadProps> = ({
           <div className="max-h-64 overflow-y-auto space-y-2">
             {selectedFiles.map((file, index) => (
               <div key={index} className="glass-card rounded-lg p-3 flex items-center justify-between">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
                   <File className="w-5 h-5 text-neon-cyan flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="font-mono text-sm truncate">{file.name}</p>
-                    <div className="flex items-center gap-2 text-xs text-gray-400">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-sans text-sm truncate">{file.name}</p>
+                    <div className="flex items-center gap-2 text-xs text-gray-400 font-sans">
                       <span>{formatFileSize(file.size)}</span>
                       <span>•</span>
-                      <span>{file.type || 'Unknown type'}</span>
+                      <span className="truncate">{file.type || 'Unknown type'}</span>
                     </div>
                   </div>
                 </div>
                 
                 <button
                   onClick={() => removeFile(index)}
-                  className="p-1 text-gray-400 hover:text-red-400 transition-colors flex-shrink-0"
+                  className="p-1 text-gray-400 hover:text-red-400 transition-colors flex-shrink-0 ml-2"
                 >
                   <X className="w-4 h-4" />
                 </button>

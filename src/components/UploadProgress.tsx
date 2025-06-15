@@ -15,8 +15,8 @@ const UploadProgress: React.FC<UploadProgressProps> = ({ files }) => {
   if (files.length === 0) return null;
 
   return (
-    <div className="glass-card rounded-lg p-6 space-y-4">
-      <h3 className="text-lg font-mono text-neon-green flex items-center gap-2">
+    <div className="glass-card rounded-lg p-4 sm:p-6 space-y-4">
+      <h3 className="text-base sm:text-lg font-sans text-neon-green flex items-center gap-2 font-semibold">
         <Loader className="w-5 h-5 animate-spin" />
         Upload Progress
       </h3>
@@ -25,18 +25,18 @@ const UploadProgress: React.FC<UploadProgressProps> = ({ files }) => {
         {files.map((file, index) => (
           <div key={index} className="space-y-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <File className="w-4 h-4 text-neon-cyan" />
-                <div>
-                  <p className="font-mono text-sm truncate max-w-xs">{file.name}</p>
-                  <p className="text-xs text-gray-400">{formatFileSize(file.size)}</p>
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <File className="w-4 h-4 text-neon-cyan flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="font-sans text-sm truncate">{file.name}</p>
+                  <p className="text-xs text-gray-400 font-sans">{formatFileSize(file.size)}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-shrink-0">
                 {file.status === 'uploading' && (
                   <>
-                    <span className="text-xs font-mono text-neon-cyan">{file.progress}%</span>
+                    <span className="text-xs font-sans text-neon-cyan">{file.progress}%</span>
                     <Loader className="w-4 h-4 text-neon-cyan animate-spin" />
                   </>
                 )}

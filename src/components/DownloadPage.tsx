@@ -71,10 +71,10 @@ const DownloadPage: React.FC<DownloadPageProps> = ({ fileId }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-dark-bg text-white flex items-center justify-center">
+      <div className="min-h-screen bg-dark-bg text-white flex items-center justify-center p-4">
         <div className="text-center">
           <div className="w-12 h-12 border-2 border-neon-green border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="font-mono text-neon-green">Loading file...</p>
+          <p className="font-sans text-neon-green">Loading file...</p>
         </div>
       </div>
     );
@@ -82,11 +82,11 @@ const DownloadPage: React.FC<DownloadPageProps> = ({ fileId }) => {
 
   if (error && error !== 'password_required') {
     return (
-      <div className="min-h-screen bg-dark-bg text-white flex items-center justify-center">
-        <div className="glass-card rounded-lg p-8 max-w-md text-center">
+      <div className="min-h-screen bg-dark-bg text-white flex items-center justify-center p-4">
+        <div className="glass-card rounded-lg p-6 sm:p-8 max-w-md text-center">
           <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <GlitchText text="ACCESS DENIED" className="text-2xl font-bold mb-4" />
-          <p className="text-gray-300 font-mono">{error}</p>
+          <GlitchText text="ACCESS DENIED" className="text-xl sm:text-2xl font-bold mb-4" />
+          <p className="text-gray-300 font-sans">{error}</p>
         </div>
       </div>
     );
@@ -94,31 +94,31 @@ const DownloadPage: React.FC<DownloadPageProps> = ({ fileId }) => {
 
   return (
     <div className="min-h-screen bg-dark-bg text-white flex items-center justify-center p-4">
-      <div className="glass-card rounded-lg p-8 max-w-md w-full">
+      <div className="glass-card rounded-lg p-6 sm:p-8 max-w-md w-full">
         <div className="text-center mb-6">
           <Shield className="w-16 h-16 text-neon-green mx-auto mb-4" />
-          <GlitchText text="SECURE DOWNLOAD" className="text-2xl font-bold mb-2" />
-          <p className="text-gray-400 font-mono">File ready for download</p>
+          <GlitchText text="SECURE DOWNLOAD" className="text-xl sm:text-2xl font-bold mb-2" />
+          <p className="text-gray-400 font-sans">File ready for download</p>
         </div>
 
         {file && (
           <div className="bg-dark-card rounded-lg p-4 mb-6 space-y-2">
-            <div className="flex justify-between">
-              <span className="text-gray-400 font-mono text-sm">Name:</span>
-              <span className="text-white font-mono text-sm truncate ml-2">{file.file_name}</span>
+            <div className="flex justify-between items-start">
+              <span className="text-gray-400 font-sans text-sm">Name:</span>
+              <span className="text-white font-sans text-sm truncate ml-2 max-w-[200px]">{file.file_name}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400 font-mono text-sm">Size:</span>
-              <span className="text-neon-cyan font-mono text-sm">{formatFileSize(file.file_size)}</span>
+              <span className="text-gray-400 font-sans text-sm">Size:</span>
+              <span className="text-neon-cyan font-sans text-sm">{formatFileSize(file.file_size)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400 font-mono text-sm">Expires:</span>
-              <span className="text-neon-pink font-mono text-sm">{formatTimeRemaining(new Date(file.expires_at))}</span>
+              <span className="text-gray-400 font-sans text-sm">Expires:</span>
+              <span className="text-neon-pink font-sans text-sm">{formatTimeRemaining(new Date(file.expires_at))}</span>
             </div>
             {file.max_downloads && (
               <div className="flex justify-between">
-                <span className="text-gray-400 font-mono text-sm">Downloads:</span>
-                <span className="text-yellow-400 font-mono text-sm">
+                <span className="text-gray-400 font-sans text-sm">Downloads:</span>
+                <span className="text-yellow-400 font-sans text-sm">
                   {file.current_downloads}/{file.max_downloads}
                 </span>
               </div>
@@ -128,7 +128,7 @@ const DownloadPage: React.FC<DownloadPageProps> = ({ fileId }) => {
 
         {(error === 'password_required' || file?.password_hash) && (
           <div className="mb-6">
-            <label className="block text-sm font-mono text-gray-300 mb-2">
+            <label className="block text-sm font-sans text-gray-300 mb-2 font-medium">
               <Lock className="w-4 h-4 inline mr-2" />
               Password Required
             </label>
@@ -138,7 +138,7 @@ const DownloadPage: React.FC<DownloadPageProps> = ({ fileId }) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password..."
-                className="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 pr-12 font-mono text-sm focus:border-neon-green focus:outline-none transition-colors"
+                className="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 pr-12 font-sans text-sm focus:border-neon-green focus:outline-none transition-colors"
                 onKeyPress={(e) => e.key === 'Enter' && handleDownload()}
               />
               <button
@@ -154,7 +154,7 @@ const DownloadPage: React.FC<DownloadPageProps> = ({ fileId }) => {
 
         {error && error !== 'password_required' && (
           <div className="mb-4 p-3 bg-red-400/10 border border-red-400/30 rounded-lg">
-            <p className="text-red-400 font-mono text-sm">{error}</p>
+            <p className="text-red-400 font-sans text-sm">{error}</p>
           </div>
         )}
 
@@ -162,7 +162,7 @@ const DownloadPage: React.FC<DownloadPageProps> = ({ fileId }) => {
           onClick={handleDownload}
           disabled={downloading || (file?.password_hash && !password)}
           className={`
-            w-full py-4 rounded-lg font-mono text-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3
+            w-full py-4 rounded-lg font-sans text-base sm:text-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3
             ${downloading || (file?.password_hash && !password)
               ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
               : 'bg-gradient-neon text-dark-bg hover:scale-105 hover:shadow-2xl neon-border'
@@ -183,7 +183,7 @@ const DownloadPage: React.FC<DownloadPageProps> = ({ fileId }) => {
         </button>
 
         <div className="mt-6 text-center">
-          <p className="text-xs text-gray-500 font-mono">
+          <p className="text-xs text-gray-500 font-sans">
             This file will self-destruct after download or expiration
           </p>
         </div>

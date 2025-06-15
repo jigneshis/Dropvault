@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,10 +11,19 @@
   }
   
   body {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     background: #0a0a0a;
     color: #ffffff;
     overflow-x: hidden;
+    line-height: 1.6;
+  }
+  
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  
+  .font-sans {
+    font-family: 'Inter', sans-serif;
   }
 }
 
@@ -31,6 +43,7 @@
     position: relative;
     color: #00ff41;
     font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
   }
   
   .glitch-text::before,
@@ -98,4 +111,26 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #00ffff;
+}
+
+/* Responsive text sizing */
+@media (max-width: 640px) {
+  .glitch-text {
+    font-size: 0.9em;
+  }
+}
+
+/* Improved button hover states for mobile */
+@media (hover: hover) {
+  .hover\:scale-105:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* Touch-friendly sizing for mobile */
+@media (max-width: 768px) {
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }

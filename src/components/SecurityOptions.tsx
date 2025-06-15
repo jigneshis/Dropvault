@@ -37,15 +37,15 @@ const SecurityOptions: React.FC<SecurityOptionsProps> = ({ onOptionsChange }) =>
   ];
 
   return (
-    <div className="glass-card rounded-lg p-6 space-y-6">
-      <h3 className="text-lg font-mono text-neon-green flex items-center gap-2">
+    <div className="glass-card rounded-lg p-4 sm:p-6 space-y-6">
+      <h3 className="text-base sm:text-lg font-sans text-neon-green flex items-center gap-2 font-semibold">
         <Lock className="w-5 h-5" />
         Security Settings
       </h3>
 
       {/* Password Protection */}
       <div className="space-y-3">
-        <label className="block text-sm font-mono text-gray-300">
+        <label className="block text-sm font-sans text-gray-300 font-medium">
           Password Protection (Optional)
         </label>
         <div className="relative">
@@ -54,7 +54,7 @@ const SecurityOptions: React.FC<SecurityOptionsProps> = ({ onOptionsChange }) =>
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter password..."
-            className="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 pr-12 font-mono text-sm focus:border-neon-green focus:outline-none transition-colors"
+            className="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 pr-12 font-sans text-sm focus:border-neon-green focus:outline-none transition-colors"
           />
           <button
             type="button"
@@ -65,13 +65,13 @@ const SecurityOptions: React.FC<SecurityOptionsProps> = ({ onOptionsChange }) =>
           </button>
         </div>
         {password && (
-          <p className="text-xs text-neon-green font-mono">🔒 Password protection enabled</p>
+          <p className="text-xs text-neon-green font-sans">🔒 Password protection enabled</p>
         )}
       </div>
 
       {/* Expiry Time */}
       <div className="space-y-3">
-        <label className="block text-sm font-mono text-gray-300 flex items-center gap-2">
+        <label className="block text-sm font-sans text-gray-300 flex items-center gap-2 font-medium">
           <Clock className="w-4 h-4" />
           Auto-Destruct Timer
         </label>
@@ -81,7 +81,7 @@ const SecurityOptions: React.FC<SecurityOptionsProps> = ({ onOptionsChange }) =>
               key={option.value}
               onClick={() => setExpiresIn(option.value)}
               className={`
-                p-3 rounded-lg font-mono text-sm transition-all duration-200
+                p-3 rounded-lg font-sans text-sm transition-all duration-200 min-h-[44px]
                 ${expiresIn === option.value
                   ? 'bg-neon-green/20 border-neon-green text-neon-green neon-border'
                   : 'bg-dark-card border border-gray-600 text-gray-300 hover:border-neon-green/50'
@@ -104,7 +104,7 @@ const SecurityOptions: React.FC<SecurityOptionsProps> = ({ onOptionsChange }) =>
             onChange={(e) => setEnableDownloadLimit(e.target.checked)}
             className="w-4 h-4 text-neon-green bg-dark-card border-gray-600 rounded focus:ring-neon-green"
           />
-          <label htmlFor="downloadLimit" className="text-sm font-mono text-gray-300 flex items-center gap-2">
+          <label htmlFor="downloadLimit" className="text-sm font-sans text-gray-300 flex items-center gap-2 font-medium">
             <Download className="w-4 h-4" />
             Limit Downloads
           </label>
@@ -118,7 +118,7 @@ const SecurityOptions: React.FC<SecurityOptionsProps> = ({ onOptionsChange }) =>
             value={maxDownloads || 1}
             onChange={(e) => setMaxDownloads(parseInt(e.target.value))}
             placeholder="Max downloads"
-            className="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 font-mono text-sm focus:border-neon-green focus:outline-none transition-colors"
+            className="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 font-sans text-sm focus:border-neon-green focus:outline-none transition-colors"
           />
         )}
       </div>

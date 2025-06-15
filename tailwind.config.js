@@ -5,6 +5,7 @@ export default {
     extend: {
       fontFamily: {
         'mono': ['JetBrains Mono', 'monospace'],
+        'sans': ['Inter', 'sans-serif'],
       },
       colors: {
         'neon-green': '#00ff41',
@@ -49,6 +50,9 @@ export default {
       },
       backgroundImage: {
         'gradient-neon': 'linear-gradient(45deg, #00ff41, #00ffff, #ff00ff)',
+      },
+      screens: {
+        'xs': '475px',
       },
     },
   },
