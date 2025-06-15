@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Zap, Upload as UploadIcon, Github, MessageCircle, HardDrive, X, ExternalLink, Scissors } from 'lucide-react';
+import { Shield, Zap, Upload as UploadIcon, Github, MessageCircle, HardDrive, X, ExternalLink, Scissors, AlertTriangle } from 'lucide-react';
 import MatrixRain from './components/MatrixRain';
 import GlitchText from './components/GlitchText';
 import FileUpload from './components/FileUpload';
@@ -9,6 +9,7 @@ import ShareResult from './components/ShareResult';
 import StatsDisplay from './components/StatsDisplay';
 import DownloadPage from './components/DownloadPage';
 import { StorageService } from './utils/storage';
+import { isSupabaseConfigured } from './utils/supabase';
 
 interface SecuritySettings {
   password?: string;
@@ -73,14 +74,26 @@ function App() {
           ));
           
           try {
-            // Actually upload to Supabase
-            const result = await StorageService.uploadFile(
-              file,
-              settings.password,
-              settings.expiresIn,
-              settings.maxDownloads
-            );
-            resolve(result);
+            if (!isSupabaseConfigured) {
+              // Mock successful upload when Supabase is not configured
+              const mockResult: CompletedUpload = {
+                fileId: 'mock-' + Math.random().toString(36).substring(7),
+                fileName: file.name,
+                expiresAt: new Date(Date.now() + settings.expiresIn * 60 * 60 * 1000),
+                hasPassword: !!settings.password,
+                maxDownloads: settings.maxDownloads
+              };
+              resolve(mockResult);
+            } else {
+              // Actually upload to Supabase
+              const result = await StorageService.uploadFile(
+                file,
+                settings.password,
+                settings.expiresIn,
+                settings.maxDownloads
+              );
+              resolve(result);
+            }
           } catch (error) {
             setUploadFiles(prev => prev.map(f => 
               f.name === file.name 
@@ -153,6 +166,15 @@ function App() {
               </div>
               
               <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+                {!isSupabaseConfigured && (
+                  <div className="px-3 py-2 bg-yellow-500/20 border border-yellow-500/50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-yellow-400" />
+                      <span className="text-xs text-yellow-400 font-sans">Demo Mode</span>
+                    </div>
+                  </div>
+                )}
+                
                 <button
                   onClick={() => setShowStoragePopup(true)}
                   className="px-3 py-2 sm:px-4 sm:py-2 bg-gradient-to-r from-neon-pink to-neon-cyan text-dark-bg rounded-lg font-sans text-xs sm:text-sm font-semibold hover:scale-105 transition-all duration-200 flex items-center gap-2 neon-border"

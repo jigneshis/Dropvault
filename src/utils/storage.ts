@@ -1,4 +1,4 @@
-import { supabase, STORAGE_BUCKET, SharedFile } from './supabase';
+import { supabase, STORAGE_BUCKET, SharedFile, isSupabaseConfigured } from './supabase';
 import { hashPassword, verifyPassword } from './crypto';
 
 export class StorageService {
@@ -14,6 +14,10 @@ export class StorageService {
     hasPassword: boolean;
     maxDownloads?: number;
   }> {
+    if (!isSupabaseConfigured) {
+      throw new Error('Supabase is not configured. Please set up your environment variables.');
+    }
+
     try {
       // Generate unique file path
       const fileId = this.generateId();
@@ -79,6 +83,10 @@ export class StorageService {
     file: SharedFile;
     downloadUrl: string;
   } | null> {
+    if (!isSupabaseConfigured) {
+      throw new Error('Supabase is not configured. Please set up your environment variables.');
+    }
+
     try {
       // Get file metadata from database
       const { data: fileData, error: dbError } = await supabase
@@ -139,6 +147,10 @@ export class StorageService {
   }
 
   static async deleteFile(fileId: string): Promise<boolean> {
+    if (!isSupabaseConfigured) {
+      return false;
+    }
+
     try {
       // Delete from storage
       const { error: storageError } = await supabase.storage
@@ -159,6 +171,10 @@ export class StorageService {
   }
 
   static async incrementDownload(fileId: string): Promise<void> {
+    if (!isSupabaseConfigured) {
+      return;
+    }
+
     try {
       await supabase
         .from('shared_files')
@@ -177,6 +193,16 @@ export class StorageService {
     filesToday: number;
     avgFileSize: number;
   }> {
+    if (!isSupabaseConfigured) {
+      // Return mock data when Supabase is not configured
+      return { 
+        totalFiles: Math.floor(Math.random() * 1000) + 500, 
+        totalDownloads: Math.floor(Math.random() * 5000) + 2000, 
+        filesToday: Math.floor(Math.random() * 50) + 10, 
+        avgFileSize: Math.floor(Math.random() * 10000000) + 1000000 
+      };
+    }
+
     try {
       const { data, error } = await supabase
         .rpc('get_file_stats');
