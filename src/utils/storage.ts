@@ -1,4 +1,4 @@
-import { supabase, isSupabaseConfigured } from './supabase'
+import { supabase } from './supabase'
 import type { SharedFile } from './supabase'
 import { hashPassword, verifyPassword } from './crypto'
 
@@ -17,17 +17,6 @@ export class StorageService {
     hasPassword: boolean
     maxDownloads?: number
   }> {
-    if (!isSupabaseConfigured || !supabase) {
-      // Mock response for demo mode
-      return {
-        fileId: 'demo-' + Math.random().toString(36).substring(7),
-        fileName: file.name,
-        expiresAt: new Date(Date.now() + expiresInHours * 60 * 60 * 1000),
-        hasPassword: !!password,
-        maxDownloads
-      }
-    }
-
     // Generate unique file path
     const filePath = this.generateUniqueFileName(file.name)
     const expiresAt = new Date(Date.now() + expiresInHours * 60 * 60 * 1000)
@@ -87,11 +76,6 @@ export class StorageService {
     file: SharedFile
     downloadUrl: string
   } | null> {
-    if (!isSupabaseConfigured || !supabase) {
-      // Mock response for demo mode
-      return null
-    }
-
     const { data, error } = await supabase
       .from('shared_files')
       .select('*')
@@ -135,10 +119,6 @@ export class StorageService {
   }
 
   static async incrementDownload(fileId: string): Promise<void> {
-    if (!isSupabaseConfigured || !supabase) {
-      return // Skip in demo mode
-    }
-
     const { error } = await supabase
       .from('shared_files')
       .update({ 
@@ -158,16 +138,6 @@ export class StorageService {
     filesToday: number
     avgFileSize: number
   }> {
-    if (!isSupabaseConfigured || !supabase) {
-      // Mock stats for demo mode
-      return {
-        totalFiles: 1337,
-        totalDownloads: 4269,
-        filesToday: 42,
-        avgFileSize: 2.5 * 1024 * 1024 // 2.5MB
-      }
-    }
-
     const { data, error } = await supabase
       .from('shared_files')
       .select('file_size, current_downloads, created_at')
@@ -191,10 +161,6 @@ export class StorageService {
   }
 
   static async downloadFile(filePath: string): Promise<Blob> {
-    if (!isSupabaseConfigured || !supabase) {
-      throw new Error('Supabase not configured')
-    }
-
     const { data, error } = await supabase.storage
       .from(this.BUCKET_NAME)
       .download(filePath)
@@ -207,10 +173,6 @@ export class StorageService {
   }
 
   static async deleteFile(filePath: string): Promise<void> {
-    if (!isSupabaseConfigured || !supabase) {
-      return
-    }
-
     const { error } = await supabase.storage
       .from(this.BUCKET_NAME)
       .remove([filePath])
