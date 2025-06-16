@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { supabase, isSupabaseConfigured } from './supabase'
 import type { SharedFile } from './supabase'
 import { hashPassword, verifyPassword } from './crypto'
 
@@ -6,17 +6,31 @@ export class StorageService {
   private static readonly BUCKET_NAME = 'shared-files'
 
   static async uploadFile(
-    file: File, 
-    options: {
-      password?: string
-      expiresAt: Date
-      maxDownloads?: number
-      ipAddress?: string
-      userAgent?: string
+    file: File,
+    password?: string,
+    expiresInHours: number = 24,
+    maxDownloads?: number
+  ): Promise<{
+    fileId: string
+    fileName: string
+    expiresAt: Date
+    hasPassword: boolean
+    maxDownloads?: number
+  }> {
+    if (!isSupabaseConfigured || !supabase) {
+      // Mock response for demo mode
+      return {
+        fileId: 'demo-' + Math.random().toString(36).substring(7),
+        fileName: file.name,
+        expiresAt: new Date(Date.now() + expiresInHours * 60 * 60 * 1000),
+        hasPassword: !!password,
+        maxDownloads
+      }
     }
-  ): Promise<{ fileRecord: SharedFile; filePath: string }> {
+
     // Generate unique file path
     const filePath = this.generateUniqueFileName(file.name)
+    const expiresAt = new Date(Date.now() + expiresInHours * 60 * 60 * 1000)
     
     // Upload file to storage
     const { data, error } = await supabase.storage
@@ -31,7 +45,7 @@ export class StorageService {
     }
 
     // Hash password if provided
-    const passwordHash = options.password ? await hashPassword(options.password) : null
+    const passwordHash = password ? await hashPassword(password) : null
 
     // Create database record
     const fileRecord: Omit<SharedFile, 'id' | 'created_at'> = {
@@ -40,12 +54,12 @@ export class StorageService {
       file_size: file.size,
       file_type: file.type,
       password_hash: passwordHash,
-      expires_at: options.expiresAt.toISOString(),
-      max_downloads: options.maxDownloads,
+      expires_at: expiresAt.toISOString(),
+      max_downloads: maxDownloads,
       current_downloads: 0,
       last_accessed: null,
-      ip_address: options.ipAddress,
-      user_agent: options.userAgent
+      ip_address: null,
+      user_agent: null
     }
 
     const { data: dbData, error: dbError } = await supabase
@@ -60,14 +74,28 @@ export class StorageService {
       throw new Error(`Database error: ${dbError.message}`)
     }
 
-    return { fileRecord: dbData, filePath: data.path }
+    return {
+      fileId: dbData.id,
+      fileName: file.name,
+      expiresAt,
+      hasPassword: !!password,
+      maxDownloads
+    }
   }
 
-  static async getFile(filePath: string, password?: string): Promise<SharedFile | null> {
+  static async getFile(fileId: string, password?: string): Promise<{
+    file: SharedFile
+    downloadUrl: string
+  } | null> {
+    if (!isSupabaseConfigured || !supabase) {
+      // Mock response for demo mode
+      return null
+    }
+
     const { data, error } = await supabase
       .from('shared_files')
       .select('*')
-      .eq('file_path', filePath)
+      .eq('id', fileId)
       .single()
 
     if (error || !data) {
@@ -85,26 +113,39 @@ export class StorageService {
     }
 
     // Verify password if required
-    if (data.password_hash && password) {
+    if (data.password_hash) {
+      if (!password) {
+        throw new Error('Password required')
+      }
       const isValid = await verifyPassword(password, data.password_hash)
       if (!isValid) {
-        return null
+        throw new Error('Invalid password')
       }
-    } else if (data.password_hash && !password) {
-      return null
     }
 
-    return data
+    // Get download URL
+    const { data: urlData } = supabase.storage
+      .from(this.BUCKET_NAME)
+      .getPublicUrl(data.file_path)
+
+    return {
+      file: data,
+      downloadUrl: urlData.publicUrl
+    }
   }
 
-  static async incrementDownload(filePath: string): Promise<void> {
+  static async incrementDownload(fileId: string): Promise<void> {
+    if (!isSupabaseConfigured || !supabase) {
+      return // Skip in demo mode
+    }
+
     const { error } = await supabase
       .from('shared_files')
       .update({ 
         current_downloads: supabase.raw('current_downloads + 1'),
         last_accessed: new Date().toISOString()
       })
-      .eq('file_path', filePath)
+      .eq('id', fileId)
 
     if (error) {
       throw new Error(`Failed to increment download count: ${error.message}`)
@@ -114,11 +155,22 @@ export class StorageService {
   static async getStats(): Promise<{
     totalFiles: number
     totalDownloads: number
-    totalSize: number
+    filesToday: number
+    avgFileSize: number
   }> {
+    if (!isSupabaseConfigured || !supabase) {
+      // Mock stats for demo mode
+      return {
+        totalFiles: 1337,
+        totalDownloads: 4269,
+        filesToday: 42,
+        avgFileSize: 2.5 * 1024 * 1024 // 2.5MB
+      }
+    }
+
     const { data, error } = await supabase
       .from('shared_files')
-      .select('file_size, current_downloads')
+      .select('file_size, current_downloads, created_at')
 
     if (error) {
       throw new Error(`Failed to get stats: ${error.message}`)
@@ -126,12 +178,23 @@ export class StorageService {
 
     const totalFiles = data.length
     const totalDownloads = data.reduce((sum, file) => sum + (file.current_downloads || 0), 0)
-    const totalSize = data.reduce((sum, file) => sum + file.file_size, 0)
+    const avgFileSize = data.length > 0 ? data.reduce((sum, file) => sum + file.file_size, 0) / data.length : 0
+    
+    // Count files uploaded today
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const filesToday = data.filter(file => 
+      file.created_at && new Date(file.created_at) >= today
+    ).length
 
-    return { totalFiles, totalDownloads, totalSize }
+    return { totalFiles, totalDownloads, filesToday, avgFileSize }
   }
 
   static async downloadFile(filePath: string): Promise<Blob> {
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase not configured')
+    }
+
     const { data, error } = await supabase.storage
       .from(this.BUCKET_NAME)
       .download(filePath)
@@ -144,6 +207,10 @@ export class StorageService {
   }
 
   static async deleteFile(filePath: string): Promise<void> {
+    if (!isSupabaseConfigured || !supabase) {
+      return
+    }
+
     const { error } = await supabase.storage
       .from(this.BUCKET_NAME)
       .remove([filePath])
@@ -153,28 +220,10 @@ export class StorageService {
     }
   }
 
-  static async getFileUrl(filePath: string): Promise<string> {
-    const { data } = supabase.storage
-      .from(this.BUCKET_NAME)
-      .getPublicUrl(filePath)
-
-    return data.publicUrl
-  }
-
   static generateUniqueFileName(originalName: string): string {
     const timestamp = Date.now()
     const randomString = Math.random().toString(36).substring(2, 15)
     const extension = originalName.split('.').pop()
     return `${timestamp}-${randomString}.${extension}`
-  }
-
-  static formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes'
-    
-    const k = 1024
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 }
